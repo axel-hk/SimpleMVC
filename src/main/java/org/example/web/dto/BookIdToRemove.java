@@ -7,15 +7,13 @@ import jakarta.validation.constraints.Size;
 
 public class BookIdToRemove {
 
-    @NotEmpty
-    @Size(min = 1, max = 255, message = "Id length must be between 1 and 255")
     @NotNull
-    private String id;
-    public String getId() {
+    private Integer id;
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 }

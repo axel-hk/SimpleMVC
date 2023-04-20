@@ -1,27 +1,34 @@
 package org.example.web.dto;
 
-import javax.validation.constraints.Digits;
+
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 public class Book {
-    private String id;
+    private Integer id;
+    @NotEmpty
+    @NotNull
     private String author;
+    @NotEmpty
+    @NotNull
     private String title;
     @Digits(integer = 4, fraction = 0)
     private Integer size;
 
     public Book(){}
-    public Book(String id, String author, String title, Integer size) {
+    public Book(Integer id, String author, String title, Integer size) {
         this.id = id;
         this.author = author;
         this.title = title;
         this.size = size;
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

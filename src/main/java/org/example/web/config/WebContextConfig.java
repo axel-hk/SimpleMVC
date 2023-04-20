@@ -1,8 +1,10 @@
 package org.example.web.config;
 
+import jakarta.servlet.MultipartConfigElement;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -10,6 +12,7 @@ import org.thymeleaf.Thymeleaf;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring6.view.ThymeleafViewResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
 @Configuration
 @ComponentScan(basePackages = "org.example.web" )
@@ -46,4 +49,11 @@ public class WebContextConfig implements WebMvcConfigurer {
 
         return viewResolver;
     }
+
+    @Bean
+    public StandardServletMultipartResolver multipartResolver() {
+        StandardServletMultipartResolver resolver = new StandardServletMultipartResolver();
+        return resolver;
+    }
+
 }

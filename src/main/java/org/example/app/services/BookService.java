@@ -40,31 +40,13 @@ public class BookService {
         }
     }
 
-    public void removeBookById(String bookIdToRemove){
+    public void removeBookById(Integer bookIdToRemove){
         if(getAllBooks().stream().anyMatch(e-> Objects.equals(e.getId(), bookIdToRemove)))
             bookRepo.removeItemById(bookIdToRemove);
 
     }
 
-    public void removeByRegexp(String regexp){
-        Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE);
-
-        // Filter the list of books by author, title, or size
-        List<Book> filteredList =getAllBooks().stream()
-                .filter(book -> {
-                    Matcher matcher = pattern.matcher(book.getAuthor());
-                    if (matcher.find()) {
-                        return true;
-                    }
-                    matcher = pattern.matcher(book.getTitle());
-                    if (matcher.find()) {
-                        return true;
-                    }
-                    matcher = pattern.matcher(book.getSize().toString());
-                    return matcher.find();
-                })
-                .toList();
-
-        bookRepo.removeByRegexp(filteredList);
+    public void removeByRegexp(String regex){
+        bookRepo.removeByRegexp(regex);
     }
 }
