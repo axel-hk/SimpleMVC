@@ -10,6 +10,6 @@ public interface ProjectRepository<T> {
 
     void removeItemById(Integer id);
 
-    void removeByRegexp(String regex);
+    void removeByRegexp(List<T> books);
 
 }

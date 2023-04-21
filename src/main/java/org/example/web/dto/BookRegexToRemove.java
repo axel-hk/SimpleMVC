@@ -4,10 +4,10 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
+
 public class BookRegexToRemove {
     @NotNull
     @NotEmpty
-    @Pattern(regexp = "^[_%].*[_%]$")
     private String regex;
 
     public String getRegex() {

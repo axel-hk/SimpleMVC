@@ -14,6 +14,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Repository
 public class BookRepository implements ProjectRepository<Book>, ApplicationContextAware {
@@ -71,11 +73,12 @@ public class BookRepository implements ProjectRepository<Book>, ApplicationConte
     }
 
     @Override
-    public void removeByRegexp(String regex){
-        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-        parameterSource.addValue("regex", regex);
-        jdbcTemplate.update("DELETE FROM books WHERE author like :regex or title like :regex or size like :regex;", parameterSource);
+    public void removeByRegexp(List<Book> books){
 
+        for (Book book: books
+             ) {
+           removeItemById(book.getId());
+        }
     }
 
     @Override

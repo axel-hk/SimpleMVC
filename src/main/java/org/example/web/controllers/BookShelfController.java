@@ -11,18 +11,14 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 
 import javax.validation.Valid;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.*;
+import java.util.regex.PatternSyntaxException;
 
 @Controller
 @RequestMapping(value = "books")
@@ -77,7 +73,7 @@ public class BookShelfController {
     }
 
     @PostMapping("/removeByRegex")
-    public String removeByRegex(@Valid BookRegexToRemove bookRegexToRemove, BindingResult bindingResult, Model model){
+    public String removeByRegex(@Valid BookRegexToRemove bookRegexToRemove, BindingResult bindingResult, Model model) throws PatternSyntaxException {
         if(bindingResult.hasErrors()){
             model.addAttribute("book", new Book());
             model.addAttribute("bookIdToRemove", new BookIdToRemove());
@@ -90,8 +86,7 @@ public class BookShelfController {
     }
 
     @PostMapping("/uploadFile")
-    public String uploadFile(@RequestParam("file") MultipartFile file) throws Exception{
-        try {
+    public String uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
             String name = file.getOriginalFilename();
             byte[] bytes = file.getBytes();
 
@@ -107,13 +102,26 @@ public class BookShelfController {
             stream.close();
 
             logger.info("now file saved at: " + serverFile.getAbsolutePath());
-        }
-        catch (FileNotFoundException fl){
-            fl.printStackTrace();
-        }
 
-        return "redirect:/books/shelf";
+            return "redirect:/books/shelf";
 
     }
+
+    @ExceptionHandler(IOException.class)
+    public String handleException(IOException e) {
+        return "redirect:/books/shelf";
+    }
+
+    @ExceptionHandler(PatternSyntaxException.class)
+    public String handleRegex(PatternSyntaxException p, BindingResult bindingResult, Model model){
+            bindingResult.addError(new ObjectError(p.getClass().getName(), "Invalid regex"));
+            model.addAttribute("book", new Book());
+            model.addAttribute("bookIdToRemove", new BookIdToRemove());
+            model.addAttribute("bookList", bookService.getAllBooks());
+            return "book_shelf";
+    }
+
+
+
 
 }

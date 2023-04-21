@@ -1,5 +1,6 @@
 package org.example.app.services;
 
+import jakarta.validation.ValidationException;
 import org.apache.log4j.Logger;
 import org.example.web.dto.Book;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 @Service
 public class BookService {
@@ -46,7 +48,23 @@ public class BookService {
 
     }
 
-    public void removeByRegexp(String regex){
-        bookRepo.removeByRegexp(regex);
+    public void removeByRegexp(String regexp) throws PatternSyntaxException {
+        Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE);
+        // Filter the list of books by author, title, or size
+        List<Book> filteredList = getAllBooks().stream()
+                .filter(book -> {
+                    Matcher matcher = pattern.matcher(book.getAuthor());
+                    if (matcher.find()) {
+                        return true;
+                    }
+                    matcher = pattern.matcher(book.getTitle());
+                    if (matcher.find()) {
+                        return true;
+                    }
+                    matcher = pattern.matcher(book.getSize().toString());
+                    return matcher.find();
+                })
+                .toList();
+        bookRepo.removeByRegexp(filteredList);
     }
 }
